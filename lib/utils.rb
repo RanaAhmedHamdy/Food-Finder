@@ -1,3 +1,5 @@
+require_relative 'restaurant'
+
 class Utils
 	@@filepath = nil
 
@@ -22,5 +24,21 @@ class Utils
 			file.puts line + "\n"
 		end 
 		return true
+	end
+
+	def self.read_file
+		output = []
+		f = File.new(@@filepath, 'r').each_line do |line|
+			restaurant = self.import_line(line.chomp)
+			output << restaurant
+		end 
+		f.close
+
+		return output
+	end
+
+	def self.import_line(line)
+		line_split = line.split("\t")
+		return Restaurant.new(line_split[0], line_split[1], line_split[2])
 	end
 end

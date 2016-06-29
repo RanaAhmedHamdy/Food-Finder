@@ -28,7 +28,7 @@ class Guide
 		introduction
 		
 		result = nil
-		while result == nil
+		while result != :quit
 			puts "Available options : " + Guide::Config.actions.join(', ')
 			print ">"
 			order = gets.chomp.downcase.strip
@@ -41,9 +41,9 @@ class Guide
 	def do_action(order)
 		case order
 		when 'list'
-			puts "Listing..."
+			list
 		when 'find'
-			puts "Finding..."
+			find
 		when 'add'
 			puts "Adding..."
 			add
@@ -70,6 +70,32 @@ class Guide
 			puts "Added\n\n"
 		else
 			puts "Failed\n\n"
+		end
+	end
+
+	def list
+		restaurants = Utils.read_file
+		output_restaurants_table(restaurants)
+	end
+
+	def output_restaurants_table(restaurants)
+		restaurants.each do |r|
+			puts "#{r.name}\t#{r.cuisine}\t#{r.average_price}"
+		end
+	end
+
+	def find
+		print "Enter Keyword: "
+		keyword = gets.chomp.strip
+		restaurants = Utils.read_file
+
+		if keyword
+			found = restaurants.select do |rest|
+				rest.name.downcase.include?(keyword.downcase) || rest.cuisine.downcase.include?(keyword.downcase) || rest.average_price.to_i <= keyword.to_i
+			end
+			output_restaurants_table(found)
+		else
+			Puts "Enter a keyword"
 		end
 	end
 
